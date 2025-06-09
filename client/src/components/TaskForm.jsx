@@ -1,17 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 
-const TaskForm = ({ user, taskToEdit, onFinish }) => {
+const TaskForm = ({ user, isEdit, taskToEdit, onFinish }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
 
-  const { getTasksPerUser } = useContext(AuthContext);
-  const isEditing = !!taskToEdit;
-
   // 🔹 Populate fields when editing
   useEffect(() => {
-    if (isEditing) {
+    if (isEdit) {
       setTitle(taskToEdit.title);
       setDescription(taskToEdit.description);
       setStatus(taskToEdit.status);
@@ -32,8 +29,8 @@ const TaskForm = ({ user, taskToEdit, onFinish }) => {
       status,
     };
 
-    const url = isEditing ? `/api/edit-task/${taskToEdit.id}` : "/api/add-task";
-    const method = isEditing ? "PUT" : "POST";
+    const url = isEdit ? `/api/edit-task/${taskToEdit.id}` : "/api/add-task";
+    const method = isEdit ? "PUT" : "POST";
 
     try {
       const response = await fetch(url, {
@@ -67,7 +64,7 @@ const TaskForm = ({ user, taskToEdit, onFinish }) => {
     <div className="rounded-lg mt-5 p-6 bg-violet-50 shadow-md max-w-lg mx-auto">
       <form className="space-y-4" onSubmit={handleTaskSubmit}>
         <h2 className="text-lg font-semibold">
-          {isEditing ? "Edit Task" : "Create Task"}
+          {isEdit ? "Edit Task" : "Create Task"}
         </h2>
         {/* Title Field */}
         <div>
@@ -137,9 +134,9 @@ const TaskForm = ({ user, taskToEdit, onFinish }) => {
             type="submit"
             className="bg-teal-600 text-white px-4 py-2 rounded"
           >
-            {isEditing ? "Update Task" : "Submit Task"}
+            {isEdit ? "Update Task" : "Submit Task"}
           </button>
-          {isEditing && (
+          {isEdit && (
             <button
               type="button"
               onClick={onFinish}

@@ -7,7 +7,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const { setAuth, checkAuth } = useContext(AuthContext);
 
   useEffect(() => {
     document.title = "Login";
@@ -25,10 +24,9 @@ const Login = () => {
       });
 
       let responseData = await res.json();
+      console.log(responseData);
 
       if (res.ok) {
-        await checkAuth();
-        setAuth(true); // update auth context here
         navigate("/homepage");
       } else {
         const errorsObj = {};

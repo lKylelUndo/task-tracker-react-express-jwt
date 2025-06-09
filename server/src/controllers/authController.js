@@ -64,6 +64,7 @@ export const loginFunction = async (req, res) => {
           email: existingUser.email,
           firstName: existingUser.firstName,
           lastName: existingUser.lastName,
+          isAdmin: existingUser.isAdmin,
         },
         process.env.ACCESS_TOKEN_KEY,
         { expiresIn: "1d" }

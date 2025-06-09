@@ -4,20 +4,71 @@ import TaskForm from "../components/TaskForm";
 import TasksCard from "../components/TasksCard";
 
 const Homepage = () => {
-  const { auth, user, loading, tasks, tasksLoading, getTasksPerUser } =
-    useContext(AuthContext);
-  const [editingTask, setEditingTask] = useState(null); // 🔹 track the task being edited
+  const [auth, setAuth] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState([]);
+  const [tasksLoading, setTasksLoading] = useState(true);
+  const [tasks, setTasks] = useState([]);
+
+  const [isEdit, setIsEdit] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState([]);
+
+  async function getTasksPerUser() {
+    try {
+      console.log(user.id);
+      const res = await fetch("/api/get-tasks", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      console.log(data);
+      setTasks(data.tasks);
+      setTasksLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function checkAuth() {
+    try {
+      const res = await fetch("/api/test", {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await res.json();
+      console.log(data.user);
+      setAuth(true);
+      setUser(data.user);
+    } catch {
+      setAuth(false);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     document.title = "Home";
   }, []);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  useEffect(() => {
+    if (user && user.id) {
+      getTasksPerUser();
+    }
+  }, [user]);
 
   if (loading) return <p>Loading user info...</p>;
   if (tasksLoading) return <p>Loading tasks...</p>;
 
   async function handleEdit(task) {
     console.log(task);
-    setEditingTask(task);
+    setIsEdit(true);
+    setTaskToEdit(task);
   }
 
   async function handleDelete(id) {
@@ -33,7 +84,8 @@ const Homepage = () => {
   }
 
   const handleFormFinish = () => {
-    setEditingTask(null); // 🔹 clear edit mode
+    setIsEdit(null); 
+    setTaskToEdit(null);
     getTasksPerUser();
   };
 
@@ -48,7 +100,8 @@ const Homepage = () => {
 
           <TaskForm
             user={user}
-            taskToEdit={editingTask}
+            isEdit={isEdit}
+            taskToEdit={taskToEdit}
             onFinish={handleFormFinish}
           />
 

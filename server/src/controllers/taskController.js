@@ -4,6 +4,7 @@ import Task from "../models/Task.js";
 export const getTasksIndividualUser = async (req, res) => {
   try {
     const userId = req.user.id;
+    console.log("Inside " + userId);
     const tasks = await Task.findAll({ where: { userId } });
 
     return res.status(200).json({ tasks });
