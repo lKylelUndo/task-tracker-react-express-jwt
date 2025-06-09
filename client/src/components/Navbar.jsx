@@ -3,24 +3,25 @@ import logo from "../assets/task.png";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-const Navbar = ({ auth }) => {
- 
+const Navbar = () => {
+  const { auth } = useContext(AuthContext);
+
   const navigate = useNavigate();
-  
-  // async function handleLogout() {
-  //   try {
-  //     let res = await fetch("/api/logout", { method: "POST" });
-  //     if (res.ok) {
-  //       await res.json();
-  //       setAuth(false);
-  //       navigate("/login");
-  //     } else {
-  //       console.log("Logout failed");
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
+
+  async function handleLogout() {
+    try {
+      let res = await fetch("/api/logout", { method: "POST" });
+      if (res.ok) {
+        await res.json();
+        setAuth(false);
+        navigate("/login");
+      } else {
+        console.log("Logout failed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <div className="bg-blue-500">

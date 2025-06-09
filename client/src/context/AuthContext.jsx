@@ -4,31 +4,6 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(false);
-  const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(true);
-
-  const [tasks, setTasks] = useState([]);
-  const [tasksLoading, setTasksLoading] = useState(true);
-
-  async function getTasksPerUser() {
-    try {
-      const res = await fetch("/api/get-tasks", {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        console.log(res.statusText);
-      }
-
-      const data = await res.json();
-      setTasks(data.tasks || []);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setTasksLoading(false);
-    }
-  }
 
   async function checkAuth() {
     try {
@@ -38,12 +13,11 @@ export const AuthProvider = ({ children }) => {
       });
       const data = await res.json();
       console.log(data);
-      setAuth(res.ok);
-      setUser(data.user);
+      if (res.ok) {
+        setAuth(true);
+      }
     } catch {
       setAuth(false);
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -51,26 +25,7 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  useEffect(() => {
-    if (auth) {
-      getTasksPerUser();
-    }
-  }, [auth]);
-
   return (
-    <AuthContext.Provider
-      value={{
-        auth,
-        setAuth,
-        loading,
-        user,
-        checkAuth,
-        tasks,
-        tasksLoading,
-        getTasksPerUser,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ auth }}>{children}</AuthContext.Provider>
   );
 };
