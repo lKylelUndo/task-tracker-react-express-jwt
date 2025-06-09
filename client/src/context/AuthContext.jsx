@@ -3,7 +3,7 @@ import React, { createContext, useState, useEffect } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState(null);
 
   async function checkAuth() {
     try {
@@ -14,7 +14,14 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
       console.log(data);
       if (res.ok) {
-        setAuth(true);
+        setAuth({
+          isAuthenticated: true,
+          role: data.user.isAdmin ? "admin" : "user",
+          email: data.user.email,
+          firstName: data.user.firstName,
+          lastName: data.user.lastName,
+          id: data.user.id,
+        });
       }
     } catch {
       setAuth(false);
@@ -26,6 +33,8 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ auth }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ auth, setAuth }}>
+      {children}
+    </AuthContext.Provider>
   );
 };

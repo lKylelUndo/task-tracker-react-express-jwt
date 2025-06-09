@@ -14,6 +14,16 @@ export const getTasksIndividualUser = async (req, res) => {
   }
 };
 
+export const getAllTasks = async (req, res) => {
+  try {
+    const tasks = await Task.findAll();
+
+    return res.status(200).json({ tasks });
+  } catch (error) {
+    return res.status(401).json({ error });
+  }
+};
+
 export const addTask = async (req, res) => {
   try {
     const result = validationResult(req);

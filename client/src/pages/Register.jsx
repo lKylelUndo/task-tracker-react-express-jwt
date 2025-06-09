@@ -14,50 +14,50 @@ const Register = () => {
     document.title = "Register";
   }, []);
 
-  // async function handleRegister(e) {
-  //   e.preventDefault();
+  async function handleRegister(e) {
+    e.preventDefault();
 
-  //   const data = {
-  //     firstName,
-  //     lastName,
-  //     email,
-  //     password,
-  //     confirmPassword,
-  //   };
+    const data = {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+    };
 
-  //   try {
-  //     let res = await fetch("/api/register", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(data),
-  //     });
+    try {
+      let res = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-  //     let responseData = await res.json();
+      let responseData = await res.json();
 
-  //     if (!res.ok) {
-  //       console.error(`Registration failed: ${responseData}`);
-  //     }
+      if (!res.ok) {
+        console.error(`Registration failed: ${responseData}`);
+      }
 
-  //     if (!responseData.errors || responseData.errors.length == 0) {
-  //       navigate("/login");
-  //     } else {
-  //       console.log(responseData.errors);
+      if (!responseData.errors || responseData.errors.length == 0) {
+        navigate("/login");
+      } else {
+        console.log(responseData.errors);
 
-  //       const errorsObj = {};
-  //       responseData.errors.forEach((error) => {
-  //         errorsObj[error.path] = error.msg;
-  //       });
+        const errorsObj = {};
+        responseData.errors.forEach((error) => {
+          errorsObj[error.path] = error.msg;
+        });
 
-  //       console.log(errorsObj);
+        console.log(errorsObj);
 
-  //       setErrors(errorsObj);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+        setErrors(errorsObj);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className="bg-sky-50 h-dvh flex justify-center pt-10">

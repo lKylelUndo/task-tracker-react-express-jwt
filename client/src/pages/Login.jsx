@@ -8,6 +8,8 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  const { setAuth } = useContext(AuthContext);
+
   useEffect(() => {
     document.title = "Login";
   }, []);
@@ -24,20 +26,46 @@ const Login = () => {
       });
 
       let responseData = await res.json();
-      console.log(responseData);
+      console.log("Login Response:", responseData);
 
       if (res.ok) {
-        navigate("/homepage");
+        // Now get the logged-in user's details from the token
+        const userRes = await fetch("/api/test", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        const userData = await userRes.json();
+        console.log("User Data:", userData);
+
+        const newAuth = {
+          isAuthenticated: true,
+          role: userData.user.isAdmin ? "admin" : "user",
+          email: userData.user.email,
+          firstName: userData.user.firstName,
+          lastName: userData.user.lastName,
+          id: userData.user.id,
+        };
+
+        console.log(newAuth);
+
+        setAuth(newAuth);
+
+        // Redirect based on role
+        if (newAuth.role === "admin") {
+          navigate("/dashboard");
+        } else {
+          navigate("/homepage");
+        }
       } else {
         const errorsObj = {};
         responseData.errors.forEach((error) => {
           errorsObj[error.path] = error.msg;
         });
-        console.log(errorsObj);
         setErrors(errorsObj);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Login Error:", error);
     }
   }
 

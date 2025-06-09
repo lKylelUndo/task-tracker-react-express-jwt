@@ -7,8 +7,12 @@ const PublicRoute = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (auth) {
-      navigate("/homepage");
+    if (auth?.isAuthenticated) {
+      if (auth.role === "admin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/homepage");
+      }
     }
   }, [auth]);
 
